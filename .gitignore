@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# базы данных
+blog.db
+instance/
+*.sqlite
+*.db
+
+# IDE
+.vscode/

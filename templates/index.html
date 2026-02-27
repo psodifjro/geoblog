@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if not current_user.is_authenticated %}
+  <section class="hero" data-aos="fade-up">
+    <h1>ГеоБлог</h1>
+    <p>
+      Пространство для учебных заметок и проектов по геодезии, картографии и ГИС.
+      Создавай посты, подписывайся на авторов, собирай свою ленту и обсуждай публикации.
+    </p>
+
+    <div class="cta">
+      <a class="btn btn-primary btn-wow" href="/register">Присоединиться</a>
+      <a class="btn btn-ghost" href="/login">У меня уже есть аккаунт</a>
+    </div>
+
+    <img class="hero-img" alt="geo"
+      src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=900&q=80">
+  </section>
+
+  <div class="mt-4" data-aos="fade-up">
+    <div class="alert alert-light" style="border-radius:16px; background: rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.45);">
+      ✨ Совет: зарегистрируйся, чтобы публиковать посты, ставить лайки и собирать ленту по подпискам.
+    </div>
+  </div>
+{% endif %}
+
+<div class="d-flex align-items-center justify-content-between mt-4 mb-3">
+  <h2 class="m-0" data-aos="fade-up">Лента публикаций</h2>
+</div>
+
+{% for post in posts %}
+  <article class="post-card" data-aos="fade-up">
+    <img class="post-cover"
+      src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1400&q=80"
+      alt="cover">
+
+    <div class="post-body">
+      <h4 class="mb-1">{{ post.title }}</h4>
+
+      <div class="meta mb-2">
+        Автор: <a href="/profile/{{ post.author.id }}">{{ post.author.username }}</a>
+        · Тег: <a class="tag-chip" href="/tag/{{ post.tag }}">#{{ post.tag }}</a>
+      </div>
+
+      <p class="mb-2">{{ post.content }}</p>
+
+      <div class="actions">
+        {% if current_user.is_authenticated %}
+          <a class="like-btn" href="/like/{{ post.id }}">
+            ❤️ <span>{{ post.liked_by.count() }}</span> Лайк
+          </a>
+        {% else %}
+          <span class="like-btn" style="opacity:.75;">❤️ {{ post.liked_by.count() }}</span>
+        {% endif %}
+
+        {% if current_user.is_authenticated and current_user.id != post.author.id %}
+          <a class="btn btn-ghost" href="/follow/{{ post.author.id }}">Подписаться</a>
+        {% endif %}
+
+        {% if current_user.is_authenticated and current_user.id == post.user_id %}
+          <a class="btn btn-ghost" href="/edit/{{ post.id }}">Редактировать</a>
+          <a class="btn btn-danger btn-wow-danger" href="/delete/{{ post.id }}">Удалить</a>
+        {% endif %}
+      </div>
+
+      <hr style="opacity:.15">
+
+      <h6 class="mb-2">Комментарии</h6>
+      {% for c in post.comments %}
+        <div class="comment">• {{ c.content }}</div>
+      {% endfor %}
+
+      {% if current_user.is_authenticated %}
+      <form action="/comment/{{ post.id }}" method="POST" class="mt-2">
+        <div class="input-group">
+          <input name="content" class="form-control" placeholder="Написать комментарий..." style="border-radius:999px 0 0 999px;">
+          <button class="btn btn-primary btn-wow" style="border-radius:0 999px 999px 0;">Отправить</button>
+        </div>
+      </form>
+      {% endif %}
+    </div>
+  </article>
+{% endfor %}
+
+{% endblock %}

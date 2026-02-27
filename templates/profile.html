@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex align-items-center gap-3" data-aos="fade-up">
+  <img
+    src="https://api.dicebear.com/9.x/thumbs/svg?seed={{ user.username }}"
+    width="86" height="86"
+    style="border-radius:22px; background: rgba(255,255,255,.45); border:1px solid rgba(255,255,255,.45); padding:8px;"
+    alt="avatar"
+  />
+  <div>
+    <h2 class="mb-0">{{ user.username }}</h2>
+    <div class="meta">Подписчиков: {{ followers }} · Постов: {{ posts_count }} · Лайков: {{ likes_count }}</div>
+  </div>
+</div>
+
+<hr style="opacity:.15" class="my-4">
+
+<h4 data-aos="fade-up">Публикации</h4>
+
+{% for post in posts %}
+  <div class="post-card" data-aos="fade-up">
+    <div class="post-body">
+      <h5 class="mb-1">{{ post.title }}</h5>
+      <div class="meta mb-2">
+        Тег: <a class="tag-chip" href="/tag/{{ post.tag }}">#{{ post.tag }}</a>
+      </div>
+      <p class="mb-0">{{ post.content }}</p>
+    </div>
+  </div>
+{% endfor %}
+
+{% endblock %}
